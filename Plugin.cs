@@ -11,7 +11,7 @@ namespace HitIt
     {
         private const string modGUID = "JacobG5.HitIt";
         private const string modName = "HitIt";
-        private const string modVersion = "1.0.0";
+        private const string modVersion = "1.1.0";
 
         private readonly Harmony harmony = new Harmony(modGUID);
 
@@ -21,8 +21,11 @@ namespace HitIt
 
         internal ManualLogSource mls;
 
-        public static ConfigEntry<bool> enableCruiserKnockback;
         public static ConfigEntry<int> treeHealth;
+
+        public static ConfigEntry<bool> shouldShotgunDamageCruiser;
+        public static ConfigEntry<bool> enableCruiserKnockback;
+        public static ConfigEntry<bool> enableCruiserBulletKnockback;
 
         void Awake()
         {
@@ -31,8 +34,11 @@ namespace HitIt
                 Instance = this;
             }
 
-            enableCruiserKnockback = Config.Bind("Vehicle", "enableCruiserKnockback", true, "Makes it so when cruisers take damage from weapons they get pushed back. It's a bit much but it's also funny.");
             treeHealth = Config.Bind("Terrain", "treeHealth", 8, "How many hits with a shovel it takes to destroy a tree. Set to -1 to disable.");
+
+            shouldShotgunDamageCruiser = Config.Bind("Cruiser", "shouldShotgunDamageCruiser", true, "If cruisers should take damage from shotgun bullets.");
+            enableCruiserKnockback = Config.Bind("Cruiser", "enableCruiserKnockback", true, "Makes it so when cruisers take damage from weapons they get pushed back. It's a bit much but it's also funny.");
+            enableCruiserBulletKnockback = Config.Bind("Cruiser", "enableCruiserBulletKnockback", true, "If cruisers should take knockback from bullets from the shotgun.");
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
@@ -40,6 +46,7 @@ namespace HitIt
 
             harmony.PatchAll(typeof(VehicleControllerPatch));
             harmony.PatchAll(typeof(TerrainObstacleTriggerPatch));
+            harmony.PatchAll(typeof(ShotgunItemPatch));
         }
     }
 }
